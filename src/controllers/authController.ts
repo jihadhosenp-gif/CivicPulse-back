@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/asyncHandler';
+import { asyncHandler } from '../middleware/asyncHandler';//jin 
 import { authService } from '../services/authService';
 import { registerSchema, loginSchema } from '../validations/authValidation';
 import { authenticate, AuthRequest } from '../middleware/authMiddleware';
