@@ -7,13 +7,13 @@ import { ROLES } from '../utils/constants';
 export const seedAdmin = async (): Promise<void> => {
   try {
     if (!config.mongoUri) {
-      console.warn('[seeder] MONGO_URI not set; skipping admin seed');
+      console.warn('[seeder] MONGODB_URI not set; skipping admin seed');
       return;
     }
     await mongoose.connect(config.mongoUri);
     const existing = await User.findOne({ email: config.adminEmail.toLowerCase() });
     if (existing) {
-      console.log('[seeder] Admin already exists; skipping');
+      console.log('[seeder] Admin already exists; skipping (password unchanged)');
       return;
     }
     const hash = await bcrypt.hash(config.adminPassword, 10);
@@ -27,9 +27,8 @@ export const seedAdmin = async (): Promise<void> => {
     console.log('[seeder] Admin seeded successfully');
   } catch (error) {
     console.error('[seeder] Error:', error);
+    throw error;
   } finally {
     await mongoose.disconnect();
   }
 };
-
-seedAdmin();

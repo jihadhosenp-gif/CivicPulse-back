@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/AppError';
 import { HTTP_STATUS } from '../utils/constants';
+import logger from '../utils/logger';
 
 export interface ErrorResponse {
   success: boolean;
@@ -34,6 +35,12 @@ export const errorHandler = (
   if ((err as any).code === 11000) {
     statusCode = HTTP_STATUS.CONFLICT;
     message = 'Duplicate field value';
+  }
+
+  if (statusCode >= 500) {
+    logger.error('[errorHandler] Unhandled error', { message: err.message, stack: err.stack });
+  } else {
+    logger.warn('[errorHandler] Client error', { statusCode, message: err.message });
   }
 
   res.status(statusCode).json({ success: false, message, errors });
